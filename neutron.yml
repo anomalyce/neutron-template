@@ -1,7 +1,9 @@
 sublime_project:
-    project:
+    Neutron:
         path: "."
-    current:
+        exclude:
+            - "current"
+    "%project%":
         path: "./current"
 
 i3_workspace:
