@@ -1,0 +1,71 @@
+version: '3'
+services:
+    mysql:
+        image: mariadb:10.1
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: current
+            MYSQL_ROOT_HOST: "%"
+        networks:
+            - default
+        volumes:
+            - ./mysql/data:/var/lib/mysql
+    redis:
+        image: redis:latest
+        networks:
+            - default
+        ports:
+            - "6379:6379"
+    php:
+        build:
+            context: .
+            dockerfile: ./php/Dockerfile
+        networks:
+            - default
+        volumes:
+            - ../current:/usr/share/nginx/html
+            - ../current:/packages
+        depends_on:
+            - redis
+            - mysql
+    node:
+        image: node:8-jessie
+        networks:
+            - default
+        volumes:
+            - ../current:/home/node/app
+        ports:
+            - "8081"
+        depends_on:
+            - nginx
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:4.8
+        environment:
+            PMA_HOST: mysql
+        networks:
+            - default
+        ports:
+            - "8080:80"
+        depends_on:
+            - mysql
+    nginx:
+        image: nginx:latest
+        networks:
+            - default
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ../current:/usr/share/nginx/html
+            - ../current:/packages
+            - ./nginx/certificates:/etc/nginx/certs
+            - ./nginx/http.conf:/etc/nginx/conf.d/default.conf
+            - ./nginx/https.conf:/etc/nginx/conf.d/default-ssl.conf
+        depends_on:
+            - php
+            - phpmyadmin
+
+networks:
+    default:
+        external:
+            name: docker
