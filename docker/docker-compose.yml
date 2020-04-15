@@ -42,6 +42,7 @@ services:
         image: phpmyadmin/phpmyadmin:latest
         environment:
             - PMA_HOST=app-mysql
+            - UPLOAD_LIMIT=5G
         networks:
             - default
         ports:
