@@ -10,10 +10,6 @@ i3_workspace:
     panel_left:
         width: 0.5
         nodes:
-            browser: true
-    panel_right:
-        width: 0.5
-        nodes:
             editor: true
             Source:
                 terminal: true
@@ -27,5 +23,9 @@ i3_workspace:
                 command: "zsh -i -c 'docker-compose up; zsh'"
                 quit:
                     - "docker kill $(docker ps -q)"
+    panel_right:
+        width: 0.5
+        nodes:
+            browser: true
 
 # vim: set ft=yaml tabstop=4 shiftwidth=4 :
